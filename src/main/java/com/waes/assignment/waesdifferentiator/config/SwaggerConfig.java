@@ -28,8 +28,9 @@ public class SwaggerConfig {
     }
     private ApiInfo getApiInfo() {
         return new ApiInfo(
-                "Assignment Scalable Web - WAES",
-                "",
+                "Assignment Scalable Web - WAES Differentiator",
+                "WAES Differentiator is responsible for creating a diff structure with LEFT and RIGHT sides, " +
+                    "which are JSON base64 encoded binary data, differentiating them by size and also diff offsets and its lengths.",
                 "1.0",
                 "urn:tos",
                 new Contact("Lucas Gentile", "", ""),
