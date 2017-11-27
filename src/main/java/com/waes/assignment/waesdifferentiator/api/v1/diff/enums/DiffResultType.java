@@ -1,7 +1,7 @@
 package com.waes.assignment.waesdifferentiator.api.v1.diff.enums;
 
-public enum DiffResult {
+public enum DiffResultType {
     EQUAL,
-    DIFFERENT_SIZE,
+    DIFFERENT_LENGTH,
     DIFF
 }

@@ -18,36 +18,52 @@ public class DiffController {
     private DiffService diffService;
 
     @RequestMapping(method = RequestMethod.GET, value = "/diff/diffPair/{id}")
-    public ResponseEntity getDiffPair(@PathVariable Long id) {
+    public ResponseEntity<DiffPair> getDiffPair(@PathVariable Long id) {
         DiffPair diffPair = diffService.findDiffPair(id);
         if(diffPair != null){
             return new ResponseEntity<>(diffPair, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Diff pair with id " + id + " not found.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(diffPair, HttpStatus.NOT_FOUND);
         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/diff/{id}/left")
-    public ResponseEntity addLeft(@PathVariable Long id, @Validated @RequestBody DiffSideDTO diffSideContent) {
-        diffService.save(id, diffSideContent.getDiffSideContent(), DiffSide.LEFT);
-        return new ResponseEntity<>("left side id = " + id, HttpStatus.OK);
+    public ResponseEntity<DiffPair> saveLeft(@PathVariable Long id, @Validated @RequestBody DiffSideDTO diffSideContent) {
+
+        DiffPair savedDiffPair = null;
+        try{
+            savedDiffPair = diffService.save(id, diffSideContent.getDiffSideContent(), DiffSide.LEFT);
+
+            return new ResponseEntity<>(savedDiffPair, HttpStatus.CREATED);
+
+        } catch (Exception e){
+            return new ResponseEntity<>(savedDiffPair, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/diff/{id}/right")
-    public ResponseEntity addRight(@PathVariable Long id, @Validated @RequestBody DiffSideDTO diffSideContent) {
-        diffService.save(id, diffSideContent.getDiffSideContent(), DiffSide.RIGHT);
-        return new ResponseEntity<>("right side id = " + id, HttpStatus.OK);
+    public ResponseEntity<DiffPair> saveRight(@PathVariable Long id, @Validated @RequestBody DiffSideDTO diffSideContent) {
+        DiffPair savedDiffPair = null;
+        try{
+            savedDiffPair = diffService.save(id, diffSideContent.getDiffSideContent(), DiffSide.RIGHT);
+
+            return new ResponseEntity<>(savedDiffPair, HttpStatus.CREATED);
+
+        } catch (Exception e){
+            return new ResponseEntity<>(savedDiffPair, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/diff/{id}")
-    public ResponseEntity getDiff(@PathVariable Long id) {
-        DiffResultDTO diffResultDTO;
+    @RequestMapping(method = RequestMethod.POST, value = "/diff/{id}")
+    public ResponseEntity<DiffResultDTO> getDiff(@PathVariable Long id) {
+        DiffResultDTO diffResultDTO = null;
         try {
             diffResultDTO = diffService.runDifferentiator(id);
+
+            return new ResponseEntity<>(diffResultDTO, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(diffResultDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(diffResultDTO, HttpStatus.OK);
     }
 }
